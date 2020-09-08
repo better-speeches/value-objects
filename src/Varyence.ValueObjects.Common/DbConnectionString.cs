@@ -4,12 +4,21 @@ namespace Varyence.ValueObjects.Common
 {
     public sealed class DbConnectionString
     {
-        public DbConnectionString(string value)
+        #if DEBUG
+        private const string ConnectionString =
+            "Server=localhost,1434;Database=VaryenceValueObjects;User=SA;Password=Your_password123;trustServerCertificate=true;";
+        #else
+        private const string ConnectionString =
+            "Server=db;Database=VaryenceValueObjects;User=SA;Password=Your_password123;";
+        #endif
+        
+        //public DbConnectionString(string value)
+        public DbConnectionString()
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentNullException(nameof(value));
+            if (string.IsNullOrWhiteSpace(ConnectionString))
+                throw new ArgumentNullException(nameof(ConnectionString));
             
-            Value = value;
+            Value = ConnectionString;
         }
 
         public string Value { get; }

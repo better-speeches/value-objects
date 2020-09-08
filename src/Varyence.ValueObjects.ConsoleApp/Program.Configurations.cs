@@ -12,9 +12,6 @@ namespace Varyence.ValueObjects.ConsoleApp
 {
     public static partial class Program
     {
-        private const string ConnectionString =
-            "Server=localhost,1433;Database=VaryenceValueObjects;User=SA;Password=Your_password123;";
-
         private static async Task MigrateDatabase(IServiceScope scope)
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -24,16 +21,23 @@ namespace Varyence.ValueObjects.ConsoleApp
         
         private static ServiceProvider InitApplication() =>
             new ServiceCollection()
-                .AddSingleton(sp => new DbConnectionString(ConnectionString))
-                .AddLogging(builder => builder
-                    .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddFilter("Microsoft.EntityFrameworkCore.Database", LogLevel.Debug)
-                    .AddConsole(t => t.DisableColors = true))
+                .AddSingleton(sp => new DbConnectionString())
+                .AddLogging(ConfigureLogger)
                 .AddTransient<IPersonRepository, PersonRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<PersonController>()
                 .AddDbContext<AppDbContext>()
                 .BuildServiceProvider();
+
+        private static void ConfigureLogger(ILoggingBuilder builder)
+        {
+            builder
+                .AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                #if DEBUG
+                .AddFilter("Microsoft.EntityFrameworkCore.Database", LogLevel.Debug)
+                #endif
+                .AddConsole(t => t.DisableColors = true);
+        }
     }
 }

@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  app:
+    image: varyence.app
+    container_name: varyence.app
+    networks:
+      - varyence
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: src/Varyence.ValueObjects.ConsoleApp/Dockerfile
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
+    container_name: varyence.db
+    networks:
+      - varyence
+
+networks:
+  varyence:
+    name: varyence.network

@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varyence.ValueObjects.Conso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Varyence.ValueObjects.Common", "src\Varyence.ValueObjects.Common\Varyence.ValueObjects.Common.csproj", "{504D9BEC-28C6-4D72-920D-A1A50DDDE1C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docker-compose", "docker-compose.dcproj", "{7D9C1347-358B-44D1-8F8C-B5E94A4B2B47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,7 @@ Global
 		{B886D611-0796-4669-990E-0A1D71012DD7} = {C18FB106-C25F-44D2-AEAE-B5A311EE38EC}
 		{F8F9BB16-7E44-4B60-BA29-F54E86376FB9} = {C18FB106-C25F-44D2-AEAE-B5A311EE38EC}
 		{504D9BEC-28C6-4D72-920D-A1A50DDDE1C5} = {C18FB106-C25F-44D2-AEAE-B5A311EE38EC}
+		{7D9C1347-358B-44D1-8F8C-B5E94A4B2B47} = {67FA0A96-8E95-41F4-9BAF-2153CB6624A7}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AD70F8A6-27CF-4BAE-939C-FE4721CF7C23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
