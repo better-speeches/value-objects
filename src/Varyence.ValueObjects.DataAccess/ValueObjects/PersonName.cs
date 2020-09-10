@@ -5,10 +5,9 @@ namespace Varyence.ValueObjects.DataAccess.ValueObjects
 {
     public class PersonName : ValueObject<PersonName>
     {
-        public Name FirstName { get; protected set; }
-        public Name LastName { get; protected set; }
-        
-        public virtual Suffix Suffix { get; protected set; }
+        public virtual Name FirstName { get; }
+        public virtual Name LastName { get; }
+        public virtual Suffix Suffix { get; }
 
         protected PersonName()
         {
