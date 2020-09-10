@@ -1,4 +1,7 @@
 using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Varyence.ValueObjects.Common;
@@ -8,6 +11,11 @@ namespace Varyence.ValueObjects.DataAccess.EF
 {
     public sealed class AppDbContext : DbContext
     {
+        private static readonly Type[] EnumerationTypes =
+        {
+            typeof(Suffix)
+        };
+        
         private readonly ILoggerFactory _loggerFactory;
         private readonly DbConnectionString _connectionString;
 
@@ -16,6 +24,7 @@ namespace Varyence.ValueObjects.DataAccess.EF
             (loggerFactory, connectionString);
 
         public DbSet<Person> Persons { get; set; }
+        public DbSet<Suffix> Suffixes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,6 +41,16 @@ namespace Varyence.ValueObjects.DataAccess.EF
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            ChangeTracker.Entries()
+                .Where(x => EnumerationTypes.Contains(x.Entity.GetType()))
+                .ToList()
+                .ForEach(entity => entity.State = EntityState.Unchanged);
+
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

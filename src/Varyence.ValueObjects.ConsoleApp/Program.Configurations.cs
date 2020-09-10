@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Varyence.ValueObjects.Common;
 using Varyence.ValueObjects.DataAccess.EF;
 using Varyence.ValueObjects.DataAccess.EF.Abstractions;
 using Varyence.ValueObjects.DataAccess.EF.Repositories;
+using Varyence.ValueObjects.DataAccess.EF.Seeder;
 using Varyence.ValueObjects.DataAccess.Repositories;
 
 namespace Varyence.ValueObjects.ConsoleApp
@@ -14,20 +14,23 @@ namespace Varyence.ValueObjects.ConsoleApp
     {
         private static async Task MigrateDatabase(IServiceScope scope)
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await dbContext.Database.EnsureDeletedAsync();
-            await dbContext.Database.MigrateAsync();
+            var seeder = scope.ServiceProvider.GetRequiredService<IDbSeeder>();
+
+            await seeder.SeedAsync();
         }
         
-        private static ServiceProvider InitApplication() =>
-            new ServiceCollection()
+        private static ServiceProvider InitApplication()
+        {
+            return new ServiceCollection()
                 .AddSingleton(sp => new DbConnectionString())
                 .AddLogging(ConfigureLogger)
+                .AddTransient<IDbSeeder, DbSeeder>()
                 .AddTransient<IPersonRepository, PersonRepository>()
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<PersonController>()
                 .AddDbContext<AppDbContext>()
                 .BuildServiceProvider();
+        }
 
         private static void ConfigureLogger(ILoggingBuilder builder)
         {

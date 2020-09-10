@@ -43,6 +43,9 @@ namespace Varyence.ValueObjects.DataAccess.EF.Configurations
                         .HasColumnName("LastName")
                         .IsRequired();
                 });
+
+                x.Property<int>("NameSuffixId").HasColumnName("NameSuffixId");
+                x.HasOne(pp => pp.Suffix).WithMany().HasForeignKey("NameSuffixId");
             });
         }
     }

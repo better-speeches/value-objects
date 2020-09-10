@@ -33,15 +33,16 @@ namespace Varyence.ValueObjects.ConsoleApp
                 .OnFailure(error => _logger.LogError(error));
         }
 
-        public async Task Create(string firstName, string lastName, int age)
+        public async Task Create(string firstName, string lastName, int age, int suffixId)
         {
             var firstNameResult = Name.Create(firstName);
             var lastNameResult = Name.Create(lastName);
             var ageResult = Age.Create(age);
+            Maybe<Suffix> maybeSuffix = Suffix.FromId(suffixId);
 
             await Result
                 .Combine(firstNameResult, lastNameResult, ageResult)
-                .Bind(() => PersonName.Create(firstNameResult.Value, lastNameResult.Value))
+                .Bind(() => PersonName.Create(firstNameResult.Value, lastNameResult.Value, maybeSuffix.Value))
                 .Bind(personName => Person.Create(personName, ageResult.Value))
                 .Tap(person => _repository.Save(person))
                 .Tap(() => _unitOfWork.CommitAsync())
@@ -60,18 +61,19 @@ namespace Varyence.ValueObjects.ConsoleApp
             */
         }
         
-        public async Task Rename(int personId, string firstName, string lastName)
+        public async Task Rename(int personId, string firstName, string lastName, int suffixId)
         {
             var firstNameResult = Name.Create(firstName);
             var lastNameResult = Name.Create(lastName);
+            Maybe<Suffix> maybeSuffix = Suffix.FromId(suffixId);
 
             await Result
-                .Combine(firstNameResult, lastNameResult)
+                .Combine(firstNameResult, lastNameResult, maybeSuffix.ToResult("Suffix is null."))
                 .Bind(() => _repository
                     .GetByIdAsync(personId)
                     .ToResult($"Person was not found for ID: {personId}"))
                 .Bind(person => PersonName
-                    .Create(firstNameResult.Value, lastNameResult.Value)
+                    .Create(firstNameResult.Value, lastNameResult.Value, maybeSuffix.Value)
                     .Tap(personName => person.Rename(personName)))
                 .Tap(() => _unitOfWork.CommitAsync())
                 .Tap(() => _logger.LogInformation($"Person was renamed to {firstName} {lastName}"))
@@ -142,6 +144,18 @@ namespace Varyence.ValueObjects.ConsoleApp
                 .OnFailure(error => _logger.LogError(error));
         }
 
+        public async Task PresentWithGithub(string url)
+        {
+            var uri = new Uri(url);
+            await Result
+                .SuccessIf(uri.IsWellFormedOriginalString, $"Invalid url {url}")
+                .Bind(() => _repository
+                    .GetWithAsync(person => person.GithubAccountUri == uri)
+                    .ToResult("Person was not found with github: {url}"))
+                .Tap(person => _logger.LogInformation(person.Name.ToString()))
+                .OnFailure(error => _logger.LogError(error));
+        }
+        
         private static string FormatPerson(Person person)
         {
             var result = $"{person.Name.FirstName.Value} {person.Name.LastName.Value} has age {person.Age.Value}"; 

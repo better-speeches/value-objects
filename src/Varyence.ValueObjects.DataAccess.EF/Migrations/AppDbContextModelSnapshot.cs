@@ -33,6 +33,19 @@ namespace Varyence.ValueObjects.DataAccess.EF.Migrations
                     b.ToTable("Person","Dbo");
                 });
 
+            modelBuilder.Entity("Varyence.ValueObjects.DataAccess.Entities.Suffix", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suffix","Dbo");
+                });
+
             modelBuilder.Entity("Varyence.ValueObjects.DataAccess.Entities.Person", b =>
                 {
                     b.OwnsOne("Varyence.ValueObjects.DataAccess.ValueObjects.Age", "Age", b1 =>
@@ -61,9 +74,21 @@ namespace Varyence.ValueObjects.DataAccess.EF.Migrations
                                 .HasColumnType("int")
                                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                            b1.Property<int>("NameSuffixId")
+                                .HasColumnName("NameSuffixId")
+                                .HasColumnType("int");
+
                             b1.HasKey("PersonId");
 
+                            b1.HasIndex("NameSuffixId");
+
                             b1.ToTable("Person");
+
+                            b1.HasOne("Varyence.ValueObjects.DataAccess.Entities.Suffix", "Suffix")
+                                .WithMany()
+                                .HasForeignKey("NameSuffixId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
 
                             b1.WithOwner()
                                 .HasForeignKey("PersonId");

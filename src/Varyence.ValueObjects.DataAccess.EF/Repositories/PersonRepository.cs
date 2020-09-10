@@ -22,7 +22,7 @@ namespace Varyence.ValueObjects.DataAccess.EF.Repositories
             return await _dbContext.Persons.FindAsync(personId);
         }
 
-        public async Task<Maybe<Person>> GetWith(Expression<Func<Person, bool>> predicate)
+        public async Task<Maybe<Person>> GetWithAsync(Expression<Func<Person, bool>> predicate)
         {
             return await _dbContext.Persons.FirstOrDefaultAsync(predicate);
         }

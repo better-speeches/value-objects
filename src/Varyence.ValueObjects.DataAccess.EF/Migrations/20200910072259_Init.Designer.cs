@@ -9,8 +9,8 @@ using Varyence.ValueObjects.DataAccess.EF;
 namespace Varyence.ValueObjects.DataAccess.EF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200907183846_Initial")]
-    partial class Initial
+    [Migration("20200910072259_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,6 +33,19 @@ namespace Varyence.ValueObjects.DataAccess.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Person","Dbo");
+                });
+
+            modelBuilder.Entity("Varyence.ValueObjects.DataAccess.Entities.Suffix", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suffix","Dbo");
                 });
 
             modelBuilder.Entity("Varyence.ValueObjects.DataAccess.Entities.Person", b =>
@@ -63,9 +76,21 @@ namespace Varyence.ValueObjects.DataAccess.EF.Migrations
                                 .HasColumnType("int")
                                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                            b1.Property<int>("NameSuffixId")
+                                .HasColumnName("NameSuffixId")
+                                .HasColumnType("int");
+
                             b1.HasKey("PersonId");
 
+                            b1.HasIndex("NameSuffixId");
+
                             b1.ToTable("Person");
+
+                            b1.HasOne("Varyence.ValueObjects.DataAccess.Entities.Suffix", "Suffix")
+                                .WithMany()
+                                .HasForeignKey("NameSuffixId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
 
                             b1.WithOwner()
                                 .HasForeignKey("PersonId");

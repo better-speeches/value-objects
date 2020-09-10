@@ -6,7 +6,7 @@ namespace Varyence.ValueObjects.Common
     {
         #if DEBUG
         private const string ConnectionString =
-            "Server=localhost,1434;Database=VaryenceValueObjects;User=SA;Password=Your_password123;trustServerCertificate=true;";
+            "Server=localhost,1433;Database=VaryenceValueObjects;User=SA;Password=Your_password123;";
         #else
         private const string ConnectionString =
             "Server=db;Database=VaryenceValueObjects;User=SA;Password=Your_password123;";
