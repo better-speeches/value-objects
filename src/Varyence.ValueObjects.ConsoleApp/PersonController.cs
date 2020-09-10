@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Varyence.ValueObjects.DataAccess.EF.Abstractions;
 using Varyence.ValueObjects.DataAccess.Entities;
 using Varyence.ValueObjects.DataAccess.Repositories;
 using Varyence.ValueObjects.DataAccess.ValueObjects;
@@ -76,7 +75,7 @@ namespace Varyence.ValueObjects.ConsoleApp
                     .Create(firstNameResult.Value, lastNameResult.Value, maybeSuffix.Value)
                     .Tap(personName => person.Rename(personName)))
                 .Tap(() => _unitOfWork.CommitAsync())
-                .Tap(() => _logger.LogInformation($"Person was renamed to {firstName} {lastName}"))
+                .Tap(() => _logger.LogInformation($"Person was renamed to {maybeSuffix.Value} {firstName} {lastName}"))
                 .OnFailure(error => _logger.LogError(error));
             
             /*
@@ -152,13 +151,13 @@ namespace Varyence.ValueObjects.ConsoleApp
                 .Bind(() => _repository
                     .GetWithAsync(person => person.GithubAccountUri == uri)
                     .ToResult("Person was not found with github: {url}"))
-                .Tap(person => _logger.LogInformation(person.Name.ToString()))
+                .Tap(person => _logger.LogInformation(FormatPerson(person)))
                 .OnFailure(error => _logger.LogError(error));
         }
         
         private static string FormatPerson(Person person)
         {
-            var result = $"{person.Name.FirstName.Value} {person.Name.LastName.Value} has age {person.Age.Value}"; 
+            var result = string.Format("{0} has age {1}", person.Name, person.Age.Value); 
             return person.GithubAccountUri != null
                 ? result + $" and github {person.GithubAccountUri}"
                 : result;

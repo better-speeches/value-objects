@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Varyence.ValueObjects.DataAccess.EF;
 
 namespace Varyence.ValueObjects.DataAccess.EF.Migrations
 {
