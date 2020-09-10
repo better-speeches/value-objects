@@ -9,14 +9,14 @@ namespace Varyence.ValueObjects.DataAccess.Entities
 {
     public class Person : Entity
     {
-        public PersonName Name { get; protected set; } = null!;
-        public Age Age { get; protected set; } = null!;
+        public PersonName Name { get; protected set; }
+        public Age Age { get; protected set; }
         public Uri? GithubAccountUri { get; protected set; }
 
         protected Person()
         {
         }
-        
+
         private Person(PersonName name, Age age)
         {
             Name = name;

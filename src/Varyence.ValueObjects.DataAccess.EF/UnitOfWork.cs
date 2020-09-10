@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Varyence.ValueObjects.DataAccess.EF.Abstractions;
+using Varyence.ValueObjects.DataAccess.Repositories;
 
 namespace Varyence.ValueObjects.DataAccess.EF
 {

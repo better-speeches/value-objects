@@ -14,10 +14,16 @@ namespace Varyence.ValueObjects.DataAccess.EF.Configurations
                 .ToTable(Tables.Person, Schemas.Dbo)
                 .HasKey(p => p.Id);
 
+            #region ValueConversion
+            
             builder
                 .Property(p => p.GithubAccountUri)
                 .HasConversion(p => p.ToString(), str => new Uri(str));
+
+            #endregion
             
+            #region OwnedType
+
             builder.OwnsOne(p => p.Age, x =>
             {
                 x.Property(pp => pp.Value)
@@ -47,6 +53,8 @@ namespace Varyence.ValueObjects.DataAccess.EF.Configurations
                 x.Property<int>("NameSuffixId").HasColumnName("NameSuffixId");
                 x.HasOne(pp => pp.Suffix).WithMany().HasForeignKey("NameSuffixId");
             });
+
+            #endregion
         }
     }
 }
